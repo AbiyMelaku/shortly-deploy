@@ -3,6 +3,14 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src: ['public/client/**/*.js'],
+        dest: 'public/dist/<%= pkg.name %>.js',
+      },
     },
 
     mochaTest: {
@@ -21,6 +29,11 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      target: {
+        files: {
+          'public/dist/<%= pkg.name %>.min.js': ['client/**/*.js']
+        }
+      }
     },
 
     eslint: {
@@ -53,6 +66,16 @@ module.exports = function(grunt) {
       prodServer: {
       }
     },
+
+    git_deploy: {
+      your_target: {
+        options: {
+          url: 'ssh://root@104.131.159.128/var/repo/site.git'
+        },
+        src: './'
+      },
+    }
+
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -63,7 +86,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-nodemon');
-
+  //
+  grunt.loadNpmTasks('grunt-git-deploy');
+  //
   grunt.registerTask('server-dev', function (target) {
     grunt.task.run([ 'nodemon', 'watch' ]);
   });
